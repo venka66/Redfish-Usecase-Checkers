@@ -102,7 +102,6 @@ if __name__ == '__main__':
                 # Add sleep time based on reset type
                 if reset_type == "ForceOff" or reset_type == "GracefulShutdown":
                     print ("Sleeping 2 minutes to allow system to completely power down.")
-                #time.sleep( args.timeout )
                     time.sleep( 120 )
                 else:
                     print ("Sleeping 5 minutes to allow system to boot to OS.")
