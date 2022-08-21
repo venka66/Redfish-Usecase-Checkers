@@ -72,6 +72,11 @@ if __name__ == '__main__':
             for param in reset_params:
                 if param["Name"] == "ResetType":
                     reset_types = param["AllowableValues"]
+                # Swap power operations to allow test case execution in a defined order
+                print ("Allowable reset types check:\n {}" .format(reset_types))
+                reset_types[6], reset_types[0] = reset_types[0], reset_types[6]
+                print ("Ordering the allowable types for test execution in an uninterrupted order:\n {}" .format(reset_types))
+
             if reset_types is None:
                 results.update_test_results( "Reset Type Check", 1, "{} is not advertising any allowable resets.".format( system["Id"] ) )
                 continue
@@ -94,7 +99,14 @@ if __name__ == '__main__':
 
                 # Allow some time before checking the power state
                 # We also might skip the PowerState check and want to allow for the system to settle before performing another reset
-                time.sleep( args.timeout )
+                # Add sleep time based on reset type
+                if reset_type == "ForceOff" or reset_type == "GracefulShutdown":
+                    print ("Sleeping 2 minutes to allow system to completely power down.")
+                #time.sleep( args.timeout )
+                    time.sleep( 120 )
+                else:
+                    print ("Sleeping 5 minutes to allow system to boot to OS.")
+                    time.sleep( 300 )
 
                 # Check the power state to ensure it's in the proper state
                 exp_power_state = "On"
